@@ -1,0 +1,52 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "moc-cafe-ordering",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-10-19",
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS",
+		"run_worker_first": [
+			"/api/*"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "moc-cafe-db",
+			"database_id": "78bbe91c-fee2-4d12-8c83-886bf78b9cc5",
+			"migrations_dir": "migrations"
+		},
+		{
+			"binding": "moc_cafe_db",
+			"database_name": "moc-cafe-db",
+			"database_id": "78bbe91c-fee2-4d12-8c83-886bf78b9cc5",
+			"remote": true
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "PRODUCT_IMAGES",
+			"bucket_name": "moc-cafe-product-images"
+		},
+		{
+			"bucket_name": "coffee-shop-images",
+			"binding": "s",
+			"remote": true
+		}
+	],
+	"vars": {
+		"DELIVERY_FEE_VND": "15000",
+		"GHN_API_URL": "https://dev-online-gateway.ghn.vn",
+		"VNPAY_GATEWAY_URL": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+	},
+	"ai": {
+		"binding": "AI"
+	},
+	"vectorize": [
+		{
+			"binding": "MENU_VECTORIZE",
+			"index_name": "moc-cafe-menu"
+		}
+	]
+}
