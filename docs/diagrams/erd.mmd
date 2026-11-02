@@ -1,0 +1,29 @@
+erDiagram
+  PRODUCTS ||--o{ ORDER_ITEMS : "được đặt"
+  ORDERS ||--|{ ORDER_ITEMS : "gồm"
+  PRODUCTS {
+    string id PK
+    string name
+    string category
+    int price_vnd
+    string image_key
+    int weight_g
+  }
+  ORDERS {
+    string id PK
+    string customer_name
+    string fulfillment_type
+    int total_vnd
+    string status
+    string payment_method
+    string payment_status
+    string ghn_order_code
+  }
+  ORDER_ITEMS {
+    int id PK
+    string order_id FK
+    string product_id FK
+    int quantity
+    int unit_price_vnd
+    int line_total_vnd
+  }
