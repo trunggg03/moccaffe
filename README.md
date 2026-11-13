@@ -61,6 +61,14 @@ npm test
 
    Thêm `BANK_NAME`, `BANK_BIN`, `BANK_ACCOUNT_NUMBER`, `BANK_ACCOUNT_HOLDER` trong Cloudflare Worker Settings → Variables and Secrets nếu muốn khách nhận hướng dẫn/QR chuyển khoản tự động. Các giá trị tài khoản được gửi công khai đến trình duyệt qua `/api/config`, vì vậy chỉ nhập tài khoản nhận tiền của quán. Có thể đổi phí giao thủ công bằng biến `DELIVERY_FEE_VND`.
 
+   Lượt truy cập trang HTML được gửi bất đồng bộ tới Catalog stream. Cấu hình URL ingest Catalog trong một secret, không ghi URL vào mã nguồn:
+
+   ```sh
+   npx wrangler secret put CATALOG_STREAM_URL
+   ```
+
+   Khi được hỏi, dán URL ingest trong `steaminfo/info.txt`. Để chạy local, thêm `CATALOG_STREAM_URL=<URL-ingest>` vào `.dev.vars`. Event xem trang có `meta.event_type = "page_view"`; event tương tác có `meta.event_type` là `click`, `submit` hoặc `change`, cùng mã phần tử và đường dẫn. Cả hai loại đều có `country`, `device` và `time` (Unix milliseconds). Script không gửi giá trị người dùng nhập, nội dung chat hoặc dữ liệu biểu mẫu. Để thống kê lượt xem trong 24 giờ, lọc `meta.event_type = "page_view"` và `time` trong khoảng cần xem, rồi nhóm theo `country` và `device`.
+
 6. `wrangler.jsonc` mặc định dùng môi trường sandbox GHN và VNPay. Trước khi chạy thật, đổi `GHN_API_URL` thành `https://online-gateway.ghn.vn` và `VNPAY_GATEWAY_URL` thành `https://pay.vnpay.vn/vpcpay.html`; lấy mã merchant và secret key từ tài khoản VNPay production.
 7. Cấu hình URL IPN sau khi deploy trong VNPay Merchant Portal: `https://<ten-worker>/api/payments/vnpay/ipn`. URL Return URL được ký và tạo tự động từ domain đang chạy.
 8. Cài dependency, áp dụng migration lên D1 production và deploy:

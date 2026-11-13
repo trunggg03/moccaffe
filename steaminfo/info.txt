@@ -1,0 +1,42 @@
+đây là một enpoint stream của bản catalog để lưu trữ dữ liệu phục vụ cho bài toán sau :
+tôi cần thống kê trong 24h qua website của tôi có bao nhiêu lượt truy cập đến từ nhưng quốc gia nào nhưng loại thiết bị
+chú ý dữ liệu ghi nhận được sẽ được gửi lên catalog qua stream theo thông tin bên dưới
+
+https://f8fb6f6f730b404fb2f273fd789d04df.ingest.cloudflare.com
+body required:
+
+ {
+ "fields": {
+ {
+ "name": "id",
+ "type": "string",
+ "required": false
+ },
+ {
+ "name": "country",
+ "type": "string",
+ "required": false
+ },
+ {
+ "name": "device",
+ "type": "string",
+ "required": false
+ },
+ {
+ "name": "time",
+ "type": "timestamp",
+ "required": false,
+ "unit": "millisecond"
+ },
+ {
+ "name": "ip",
+ "type": "string",
+ "required": false
+ },
+ {
+ "name": "meta",
+ "type": "json",
+ "required": false
+ }
+ }
+}

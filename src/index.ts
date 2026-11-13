@@ -27,6 +27,8 @@ interface Env extends GhnEnv, VnpayEnv {
   AI: Ai;
   MENU_VECTORIZE: Vectorize;
   PRODUCT_IMAGES: R2Bucket;
+  ASSETS?: Fetcher;
+  CATALOG_STREAM_URL: string;
   ADMIN_TOKEN?: string;
   DELIVERY_FEE_VND?: string;
   BANK_NAME?: string;
@@ -82,7 +84,110 @@ const adminStatusSchema = z.object({
   status: z.enum(["new", "preparing", "ready", "completed", "cancelled"])
 });
 
+const catalogInteractionSchema = z.object({
+  type: z.enum(["click", "submit", "change"]),
+  target: z.string().regex(/^[a-zA-Z0-9_.:-]{1,100}$/),
+  path: z.string().regex(/^\/[^?#]{0,199}$/)
+}).strict();
+
 const app = new Hono<{ Bindings: Env }>();
+
+// Send page visits to the Catalog stream.
+app.use("*", async (context, next) => {
+  await next();
+
+  // Only track GET requests for pages (not API calls, assets, etc.)
+  const method = context.req.method;
+  const path = context.req.path;
+  const accept = context.req.header("Accept") ?? "";
+
+  // Skip API routes, health checks, and asset requests
+  const isApi = path.startsWith("/api/");
+  const isAsset = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|map)$/i.test(path);
+  const isHtml = accept.includes("text/html");
+
+  if (method === "GET" && !isApi && !isAsset && isHtml) {
+    const country = context.req.header("CF-IPCountry") ?? "unknown";
+    const userAgent = context.req.header("User-Agent") ?? "";
+    const device = detectDevice(userAgent);
+    const ip = context.req.header("CF-Connecting-IP") ?? "";
+    const time = Date.now();
+    const id ="nhom 06 cnttk22e";
+
+    context.executionCtx.waitUntil(
+      (async () => {
+        try {
+          const response = await fetch(context.env.CATALOG_STREAM_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id,
+              country,
+              device,
+              time,
+              ip,
+              meta: { event_type: "page_view", path }
+            })
+          });
+          if (!response.ok) {
+            throw new Error(`Catalog stream returned HTTP ${response.status}.`);
+          }
+        } catch (error) {
+          console.error("Catalog stream write failed:", error);
+        }
+      })()
+    );
+  }
+});
+
+app.post("/api/catalog/interaction", async (context) => {
+  const body: unknown = await context.req.json().catch(() => null);
+  const parsed = catalogInteractionSchema.safeParse(body);
+  if (!parsed.success) {
+    return context.json({ error: "Thông tin tương tác không hợp lệ." }, 400);
+  }
+
+  const { type, target, path } = parsed.data;
+  const country = context.req.header("CF-IPCountry") ?? "unknown";
+  const userAgent = context.req.header("User-Agent") ?? "";
+  const device = detectDevice(userAgent);
+  const ip = context.req.header("CF-Connecting-IP") ?? "";
+  const time = Date.now();
+
+  context.executionCtx.waitUntil(
+    (async () => {
+      try {
+        const response = await fetch(context.env.CATALOG_STREAM_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: "nhom 06 cnttk22e",
+            country,
+            device,
+            time,
+            ip,
+            meta: { event_type: type, target, path }
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Catalog stream returned HTTP ${response.status}.`);
+        }
+      } catch (error) {
+        console.error("Catalog interaction write failed:", error);
+      }
+    })()
+  );
+
+  return context.body(null, 202);
+});
+
+function detectDevice(userAgent: string): string {
+  const ua = userAgent.toLowerCase();
+  if (/bot|crawler|spider|slurp/.test(ua)) return "bot";
+  if (/ipad|tablet|android(?!.*mobile)/.test(ua)) return "tablet";
+  if (/mobile|android|iphone|ipod/.test(ua)) return "mobile";
+  return "desktop";
+}
 
 const chatHistorySchema = z.array(
   z.object({
@@ -823,7 +928,12 @@ app.post("/api/admin/products/:productId/image", async (context) => {
   return context.json({ imageUrl: `/api/images/${encodeURIComponent(productId)}` });
 });
 
-app.notFound((context) => context.json({ error: "Không tìm thấy API." }, 404));
+app.notFound((context) => {
+  if (!context.req.path.startsWith("/api/") && context.env.ASSETS) {
+    return context.env.ASSETS.fetch(context.req.raw);
+  }
+  return context.json({ error: "Không tìm thấy API." }, 404);
+});
 app.onError((error, context) => {
   console.error("Request failed.", error);
   return context.json({ error: "Đã có lỗi xảy ra. Vui lòng thử lại sau." }, 500);

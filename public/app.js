@@ -555,3 +555,46 @@ async function handleVnpayReturn() {
 }
 
 void handleVnpayReturn();
+
+function sendCatalogInteraction(type, element) {
+  const target =
+    element.id ||
+    element.dataset.analyticsAction ||
+    element.getAttribute("name") ||
+    element.classList[0] ||
+    element.tagName.toLowerCase();
+
+  fetch("/api/catalog/interaction", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      type,
+      target,
+      path: window.location.pathname
+    }),
+    keepalive: true
+  }).catch((error) => {
+    console.warn("Could not send Catalog interaction.", error);
+  });
+}
+
+document.addEventListener("click", (event) => {
+  if (!(event.target instanceof Element)) return;
+  const control = event.target.closest(
+    'a, button, [role="button"], input[type="button"], input[type="submit"]'
+  );
+  if (!control || control.disabled) return;
+  sendCatalogInteraction("click", control);
+});
+
+document.addEventListener("submit", (event) => {
+  if (event.target instanceof HTMLFormElement) {
+    sendCatalogInteraction("submit", event.target);
+  }
+});
+
+document.addEventListener("change", (event) => {
+  if (!(event.target instanceof Element)) return;
+  const control = event.target.closest('select, input[type="radio"], input[type="checkbox"]');
+  if (control) sendCatalogInteraction("change", control);
+});
