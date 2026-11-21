@@ -1,0 +1,8 @@
+flowchart LR
+  C[Khách hàng] --> W[Cloudflare Worker + Static Assets]
+  A[Quản trị viên] --> W
+  W --> H[Hono API]
+  H --> D[(Cloudflare D1)]
+  H --> R[(Cloudflare R2)]
+  H --> G[GHN API]
+  H --> V[VNPay]

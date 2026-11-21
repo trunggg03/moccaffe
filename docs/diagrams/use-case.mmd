@@ -1,0 +1,13 @@
+flowchart LR
+  KH[Khách hàng] --> M[Xem/lọc thực đơn]
+  KH --> C[Quản lý giỏ hàng]
+  KH --> O[Tạo đơn hàng]
+  KH --> P[Thanh toán COD/chuyển khoản/VNPay]
+  KH --> Q[Tra phí giao hàng]
+  QT[Quản trị viên] --> L[Đăng nhập bằng ADMIN_TOKEN]
+  QT --> U[Xem và cập nhật đơn]
+  QT --> S[Tạo/cập nhật vận đơn GHN]
+  QT --> I[Tải ảnh sản phẩm]
+  O --> D[(D1)]
+  Q --> G[GHN]
+  P --> V[VNPay]

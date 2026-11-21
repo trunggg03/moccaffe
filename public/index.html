@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f7f4ee">
+    <meta name="description" content="Thực đơn cà phê, trà và bánh tươi. Đặt trước đến lấy hoặc giao tận nơi.">
+    <title>Mộc — Cà phê & những ngày dịu dàng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+    <script src="/app.js" defer></script>
+    <script src="/chat.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Mộc Café, về đầu trang">
+        <span class="brand__mark" aria-hidden="true">m.</span>
+        <span class="brand__name">mộc <small>coffee house</small></span>
+      </a>
+      <nav class="header-actions" aria-label="Điều hướng chính">
+        <a class="header-link" href="#menu">Thực đơn <span aria-hidden="true">↘</span></a>
+        <button class="cart-button" id="open-cart" type="button" aria-label="Giỏ hàng, 0 món" aria-haspopup="dialog" aria-controls="cart-dialog">
+          <svg class="cart-button__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H6"></path>
+            <circle cx="10" cy="20" r="1.3"></circle>
+            <circle cx="18" cy="20" r="1.3"></circle>
+          </svg>
+          <span class="cart-button__label">Giỏ hàng</span>
+          <span class="cart-button__count" id="cart-count">0</span>
+          <span class="visually-hidden" id="cart-total">0₫</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__copy">
+          <p class="eyebrow"><span></span> Một góc nhỏ giữa phố</p>
+          <h1 id="hero-title">Chậm một chút,<br><em>thơm một ngày.</em></h1>
+          <p class="hero__description">Cà phê pha bằng sự tử tế, bánh mới ra lò mỗi sáng. Chọn món bạn thích, Mộc chuẩn bị nhé.</p>
+          <a class="hero__link" href="#menu">Khám phá thực đơn <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero__art" aria-hidden="true">
+          <span class="hero__sun"></span>
+          <span class="hero__leaf hero__leaf--one"></span>
+          <span class="hero__leaf hero__leaf--two"></span>
+          <div class="hero__cup"><span class="hero__coffee"></span><span class="hero__handle"></span></div>
+          <span class="hero__caption">slow mornings<br>since 2024</span>
+        </div>
+      </section>
+
+      <section class="benefits" aria-label="Thông tin phục vụ">
+        <div><span class="benefit-icon" aria-hidden="true">✳</span><span><strong>Pha mới mỗi ngày</strong><small>Nguyên liệu được chọn kỹ</small></span></div>
+        <div><span class="benefit-icon" aria-hidden="true">⌁</span><span><strong>Giao tận nơi</strong><small>Tính phí theo địa chỉ</small></span></div>
+        <div><span class="benefit-icon" aria-hidden="true">♡</span><span><strong>Đặt trước tiện lợi</strong><small>Đến lấy hoặc giao đến bạn</small></span></div>
+      </section>
+
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Từ căn bếp nhỏ của Mộc</p>
+            <h2 id="menu-title">Thực đơn <em>hôm nay</em></h2>
+          </div>
+          <span class="menu-count" id="menu-count"></span>
+        </div>
+        <div class="category-list" id="category-list" aria-label="Lọc theo danh mục"></div>
+        <p class="status-message" id="menu-status" role="status" aria-live="polite">Đang tải thực đơn…</p>
+        <div class="product-grid" id="product-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand brand--footer" href="/" aria-label="Mộc Café">
+        <span class="brand__mark" aria-hidden="true">m.</span>
+        <span class="brand__name">mộc <small>coffee house</small></span>
+      </a>
+      <p>Một chút dịu dàng, gửi đến bạn.</p>
+      <span>© 2026 Mộc Café</span>
+    </footer>
+
+    <dialog class="sheet" id="cart-dialog" aria-labelledby="cart-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__heading">
+        <div><p class="eyebrow">Món ngon đang chờ</p><h2 id="cart-title">Giỏ hàng <em>của bạn</em></h2></div>
+        <button class="icon-button" type="button" data-close="cart-dialog" aria-label="Đóng giỏ hàng">×</button>
+      </div>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-summary">
+        <div><span>Tạm tính</span><strong id="cart-subtotal">0₫</strong></div>
+        <p>Phí giao hàng được tính ở bước tiếp theo.</p>
+      </div>
+      <button class="button button--primary button--wide" id="checkout-button" type="button" disabled>
+        Tiếp tục đặt món <span aria-hidden="true">→</span>
+      </button>
+    </dialog>
+
+    <dialog class="sheet sheet--checkout" id="checkout-dialog" aria-labelledby="checkout-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__heading">
+        <div><p class="eyebrow">Chỉ còn một bước</p><h2 id="checkout-title">Thông tin <em>nhận món</em></h2></div>
+        <button class="icon-button" type="button" data-close="checkout-dialog" aria-label="Đóng đặt món">×</button>
+      </div>
+      <form id="checkout-form">
+        <fieldset class="fulfillment-options">
+          <legend>Bạn muốn nhận món thế nào?</legend>
+          <label class="choice-card" id="delivery-choice"><input type="radio" name="fulfillmentType" value="delivery"><span><strong id="delivery-choice-title">Giao tận nhà</strong><small id="delivery-choice-help">Phí giao hàng 15.000₫</small></span></label>
+          <label class="choice-card"><input type="radio" name="fulfillmentType" value="pickup" checked><span><strong>Đến lấy tại quán</strong><small>Mộc sẽ chuẩn bị sẵn cho bạn</small></span></label>
+        </fieldset>
+        <label class="field-label" for="customer-name">Tên của bạn</label>
+        <input class="text-field" id="customer-name" name="customerName" autocomplete="name" minlength="2" maxlength="80" placeholder="Nguyễn An" required>
+        <label class="field-label" for="customer-phone">Số điện thoại</label>
+        <input class="text-field" id="customer-phone" name="customerPhone" type="tel" inputmode="tel" autocomplete="tel" minlength="8" maxlength="20" placeholder="090 123 4567" required>
+        <div id="address-group">
+          <label class="field-label" id="delivery-street-label" for="delivery-street">Số nhà, tên đường</label>
+          <input class="text-field" id="delivery-street" name="deliveryStreet" autocomplete="address-line1" maxlength="180" placeholder="Số nhà, tên đường">
+          <div class="address-selects" id="ghn-address-selects">
+            <label><span class="field-label">Tỉnh / thành phố</span><select class="text-field" id="delivery-province" name="deliveryProvince"><option value="">Chọn tỉnh / thành</option></select></label>
+            <label><span class="field-label">Quận / huyện</span><select class="text-field" id="delivery-district" name="deliveryDistrict" disabled><option value="">Chọn quận / huyện</option></select></label>
+            <label><span class="field-label">Phường / xã</span><select class="text-field" id="delivery-ward" name="deliveryWard" disabled><option value="">Chọn phường / xã</option></select></label>
+          </div>
+          <p class="quote-message" id="shipping-quote" role="status" aria-live="polite">Chọn địa chỉ để tính phí vận chuyển.</p>
+        </div>
+        <label class="field-label" for="customer-note">Ghi chú <span>(không bắt buộc)</span></label>
+        <textarea class="text-field text-field--area" id="customer-note" name="customerNote" maxlength="500" placeholder="Ít đá, gọi trước khi giao…"></textarea>
+        <fieldset class="payment-options">
+          <legend>Phương thức thanh toán</legend>
+          <label class="choice-card"><input type="radio" name="paymentMethod" value="cash" checked><span><strong>Thanh toán khi nhận món</strong><small>Tiền mặt khi nhận hàng hoặc tại quán</small></span></label>
+          <label class="choice-card" id="bank-transfer-choice"><input type="radio" name="paymentMethod" value="bank_transfer"><span><strong>Chuyển khoản ngân hàng</strong><small id="bank-transfer-help">Thông tin chuyển khoản sẽ hiển thị sau khi đặt hàng</small></span></label>
+          <label class="choice-card" id="vnpay-choice"><input type="radio" name="paymentMethod" value="vnpay"><span><strong>Thanh toán online qua VNPay</strong><small>Thẻ ngân hàng, ứng dụng ngân hàng hoặc QR</small></span></label>
+        </fieldset>
+        <div class="checkout-total"><span>Tổng thanh toán <small id="payment-summary">Thanh toán khi nhận món</small></span><strong id="checkout-total">0₫</strong></div>
+        <p class="form-error" id="checkout-error" role="alert" hidden></p>
+        <button class="button button--primary button--wide" id="place-order" type="submit">
+          <span>Đặt món ngay</span><span aria-hidden="true">→</span>
+        </button>
+      </form>
+      <div class="order-success" id="order-success" hidden>
+        <span class="success-mark" aria-hidden="true">✓</span>
+        <h3>Mộc đã nhận đơn!</h3>
+        <p>Đơn hàng <strong id="success-order-id"></strong> đã được ghi nhận. Mộc sẽ liên hệ với bạn sớm nhé.</p>
+        <p class="success-total" id="success-total"></p>
+        <div class="bank-transfer-instructions" id="bank-transfer-instructions" hidden></div>
+        <button class="button button--primary button--wide" type="button" data-close="checkout-dialog">Về thực đơn</button>
+      </div>
+    </dialog>
+    <aside class="chat-widget" aria-label="Trợ lý Mộc Café">
+      <section class="chat-panel" id="chat-panel" aria-labelledby="chat-title" hidden>
+        <header class="chat-panel__header">
+          <div>
+            <p class="eyebrow">Mộc luôn sẵn lòng</p>
+            <h2 id="chat-title">Trò chuyện cùng Mộc</h2>
+          </div>
+          <button class="icon-button" id="chat-close" type="button" aria-label="Đóng trò chuyện">×</button>
+        </header>
+        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+        <p class="chat-status" id="chat-status" role="status" aria-live="polite"></p>
+        <form class="chat-form" id="chat-form">
+          <label class="visually-hidden" for="chat-input">Tin nhắn của bạn</label>
+          <input class="text-field" id="chat-input" name="message" maxlength="500" placeholder="Hỏi về menu, giá, giao hàng…" autocomplete="off" required>
+          <button class="button button--primary" type="submit" aria-label="Gửi tin nhắn">Gửi</button>
+        </form>
+      </section>
+      <button class="chat-toggle" id="chat-toggle" type="button" aria-expanded="false" aria-controls="chat-panel">
+        <span aria-hidden="true">✳</span><span>Chat với Mộc</span>
+      </button>
+    </aside>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

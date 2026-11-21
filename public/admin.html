@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f4ee">
+    <title>Quản lý đơn hàng — Mộc Café</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin.css">
+    <script src="/admin.js" defer></script>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a class="brand" href="/" aria-label="Mộc Café">
+        <span class="brand__mark">m.</span>
+        <span class="brand__name">mộc <small>coffee house</small></span>
+      </a>
+      <div class="admin-header__right">
+        <span class="admin-label">QUẢN LÝ ĐƠN HÀNG</span>
+        <button class="logout-button" id="logout" type="button" hidden>Đăng xuất</button>
+      </div>
+    </header>
+    <main class="admin-main">
+      <section class="login-card" id="login-card" aria-labelledby="login-title">
+        <p class="eyebrow">Khu vực dành cho quản lý</p>
+        <h1 id="login-title">Đăng nhập <em>quản trị</em></h1>
+        <p>Nhập mã quản trị được cấu hình trong Cloudflare Worker secrets.</p>
+        <form id="login-form">
+          <label for="admin-token">Mã quản trị</label>
+          <input id="admin-token" name="token" type="password" autocomplete="current-password" required>
+          <p class="admin-error" id="login-error" role="alert" hidden></p>
+          <button class="button button--primary" type="submit">Đăng nhập <span>→</span></button>
+        </form>
+      </section>
+
+      <section class="dashboard" id="dashboard" hidden>
+        <div class="dashboard-heading">
+          <div><p class="eyebrow">Mộc Café · quản trị</p><h1>Đơn hàng <em>mới nhất</em></h1><p class="dashboard-subtitle">Theo dõi và xử lý đơn đặt món của quán.</p></div>
+          <button class="button button--quiet" id="refresh-orders" type="button">↻ <span>Làm mới</span></button>
+        </div>
+        <section class="metrics" aria-label="Tổng quan đơn hàng">
+          <article class="metric-card"><span class="metric-icon metric-icon--all" aria-hidden="true">▤</span><div><span>Tổng đơn gần đây</span><strong id="metric-total">—</strong></div></article>
+          <article class="metric-card"><span class="metric-icon metric-icon--new" aria-hidden="true">✳</span><div><span>Đơn mới</span><strong id="metric-new">—</strong></div></article>
+          <article class="metric-card"><span class="metric-icon metric-icon--pending" aria-hidden="true">◷</span><div><span>Chờ thanh toán</span><strong id="metric-unpaid">—</strong></div></article>
+          <article class="metric-card"><span class="metric-icon metric-icon--paid" aria-hidden="true">₫</span><div><span>Đã thu · 100 đơn gần nhất</span><strong id="metric-paid">—</strong></div></article>
+        </section>
+        <div class="dashboard-toolbar">
+          <label class="search-field" for="order-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="order-search" type="search" autocomplete="off" placeholder="Tìm mã đơn, tên hoặc số điện thoại">
+          </label>
+          <label class="filter-field" for="status-filter"><span>Trạng thái</span>
+            <select id="status-filter">
+              <option value="">Tất cả đơn hàng</option>
+              <option value="new">Mới</option>
+              <option value="preparing">Đang chuẩn bị</option>
+              <option value="ready">Sẵn sàng</option>
+              <option value="completed">Hoàn tất</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
+          </label>
+          <span class="result-count" id="result-count"></span>
+        </div>
+        <p class="admin-error" id="dashboard-error" role="alert" hidden></p>
+        <div class="orders-layout">
+          <section class="orders-panel" aria-label="Danh sách đơn hàng">
+            <div class="orders-panel__heading"><strong>Đơn hàng</strong><span id="orders-updated">Đang tải…</span></div>
+            <div class="orders-list" id="orders-list"></div>
+          </section>
+          <section class="order-detail" id="order-detail" aria-label="Chi tiết đơn hàng" aria-live="polite">
+            <div class="detail-empty"><span>☕</span><p>Chọn một đơn hàng để xem chi tiết.</p></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <div class="admin-toast" id="admin-toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

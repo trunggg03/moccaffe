@@ -1,0 +1,18 @@
+sequenceDiagram
+  participant K as Khách hàng
+  participant UI as public/app.js
+  participant API as Hono Worker
+  participant DB as D1
+  participant G as GHN
+  participant V as VNPay
+  K->>UI: Chọn món, nhập thông tin
+  UI->>API: POST /api/orders
+  API->>DB: Đọc giá/sản phẩm còn bán
+  API->>G: Báo phí (khi GHN cấu hình)
+  API->>DB: Lưu order và order_items
+  alt VNPay
+    API->>V: Tạo URL thanh toán đã ký
+    V->>API: Return/IPN có HMAC
+    API->>DB: Cập nhật payment_status
+  end
+  API-->>UI: Đơn hàng / URL thanh toán
